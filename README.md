@@ -46,7 +46,7 @@ Mind+はastah*マインドマップのユーティリティプラグインです
     - `Alt-/` ⇒ `+/-`ボタン
     - `Alt-Home` ⇒ `➕`ボタン
     - `Alt-End` ⇒ `➖`ボタン
-    - `Alt－PageUp` ⇒ `＋`ボタン
+    - `Alt-PageUp` ⇒ `＋`ボタン
     - `Alt-PageDown` ⇒ `－`ボタン
     - `Alt-.` ⇒ 雲を追加
     - `Alt-.` ⇒ 雲を削除
