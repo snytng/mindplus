@@ -64,14 +64,13 @@ public class TextConverter {
 		return input
 				.replaceAll("\\r", "")
 				.replaceAll("\\n", System.lineSeparator());
-
 	}
 
 	public static String splitBL(String input){
 		return input
 				.replaceAll("\\r", "")
-				.replaceAll("(\\s*\\n){2,}", System.lineSeparator());
-
+				.replaceAll("(\\s*\\n){2,}", System.lineSeparator())
+				.replaceAll("(\\s*\\n)\\s*+$", System.lineSeparator());
 	}
 
 	public static String splitMaruAndCR(String input){
