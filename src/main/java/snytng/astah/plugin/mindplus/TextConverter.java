@@ -23,13 +23,14 @@ public class TextConverter {
 
 	public static String deleteMaru(String input){
 		return input
-				.replaceAll("。", "");
+				.replaceAll("。", "")
+				.trim();
 	}
 
 	public static String deleteCR(String input){
 		return input
-				.replaceAll("\\r", "")
-				.replaceAll("\\n", "");
+				.replaceAll("[\\r\\n]", "")
+				.trim();
 	}
 
 	public static String deleteMaruAndCR(String input){
@@ -51,26 +52,26 @@ public class TextConverter {
 	// split
 
 	public static String splitMaru(String input){
-		return input
-				.replaceAll("。", "。" + System.lineSeparator());
+		return replaceWord2WordCR(input, "。");
 	}
 
 	public static String splitTen(String input){
-		return input
-				.replaceAll("、", "、" + System.lineSeparator());
+		return replaceWord2WordCR(input, "、");
 	}
 
 	public static String splitCR(String input){
 		return input
 				.replaceAll("\\r", "")
-				.replaceAll("\\n", System.lineSeparator());
+				.replaceAll("\\n", System.lineSeparator())
+				.trim();
 	}
 
 	public static String splitBL(String input){
 		return input
 				.replaceAll("\\r", "")
 				.replaceAll("(\\s*\\n){2,}", System.lineSeparator())
-				.replaceAll("(\\s*\\n)\\s*+$", System.lineSeparator());
+				.replaceAll("(\\s*\\n)\\s*+$", System.lineSeparator())
+				.trim();
 	}
 
 	public static String splitMaruAndCR(String input){
@@ -79,7 +80,8 @@ public class TextConverter {
 
 	public static String splitRegex(String input, String regex){
 		return input
-				.replaceAll(regex, regex + System.lineSeparator());
+				.replaceAll(regex, regex + System.lineSeparator())
+				.trim();
 	}
 
 	// replace
@@ -89,9 +91,9 @@ public class TextConverter {
 	}
 
 	public static String replaceWord2WordCR(String input, String word){
-		String s = input
-				.replaceAll(word, word + System.lineSeparator());
-		return deleteRegex(s, System.lineSeparator() + "+$");
+		return input
+				.replaceAll(word, word + System.lineSeparator())
+				.trim();
 	}
 
 

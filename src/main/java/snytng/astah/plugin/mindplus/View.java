@@ -129,27 +129,27 @@ IDiagramEditorSelectionListener
 
 	// 削除ボタン
 	JButton deleteMaruButton      = new JButton("。");
-	JButton deleteCRButton        = new JButton("改行(J)");
+	JButton deleteCRButton        = new JButton("改行(S)");
 	JButton deleteMaruAndCRButton = new JButton("。と改行");
-	JButton deleteSpaceButton     = new JButton("空白");
+	JButton deleteSpaceButton     = new JButton("前後空白(Z)");
 	JTextField deleteRegexText    = new JTextField(5);
 	JButton deleteRegexButton     = new JButton("正規表現");
 
 	// 分割ボタン
 	JButton splitMaruButton       = new JButton("。(L)");
-	JButton splitCRButton         = new JButton("改行");
+	JButton splitCRButton         = new JButton("改行(J)");
 	JButton splitMaruAndCRButton  = new JButton("。と改行");
 	JButton splitBLButton         = new JButton("空行(K)");
 	JTextField splitRegexText     = new JTextField(5);
 	JButton splitRegexButton      = new JButton("正規表現");
 
 	// 置換ボタン
-	JButton replaceMaru2CRButton  = new JButton("。 ⇒ 改行");
+	JButton replaceMaru2CRButton  = new JButton("。 ⇒ 改行(C)");
 
 	// 統合ボタン
 	JButton mergeButton   = new JButton("マージ(M)");
-	JButton reverseButton = new JButton("逆順");
-	JButton rotateButton = new JButton("回転");
+	JButton reverseButton = new JButton("逆順(B)");
+	JButton rotateButton = new JButton("回転(N)");
 
 	// 雲ボタン
 	JButton cloudButton = new JButton();
@@ -163,7 +163,7 @@ IDiagramEditorSelectionListener
 	JButton closeButton = new JButton();
 
 	// 改行ボタン
-	JButton returnMaruButton = new JButton("。(N)");
+	JButton returnMaruButton = new JButton("。");
 	JButton returnTenButton = new JButton("、");
 
 	// 移動ボタン
@@ -242,20 +242,28 @@ IDiagramEditorSelectionListener
 		cloudButton.setMnemonic(KeyEvent.VK_COMMA);
 		skyButton.setMnemonic(KeyEvent.VK_PERIOD);
 
-		upNodeButton.setMnemonic(KeyEvent.VK_UP);
-		downNodeButton.setMnemonic(KeyEvent.VK_DOWN);
-		rightNodeButton.setMnemonic(KeyEvent.VK_RIGHT);
-		leftNodeButton.setMnemonic(KeyEvent.VK_LEFT);
+		mergeButton.setMnemonic(KeyEvent.VK_M);
+
+		splitMaruButton.setMnemonic(KeyEvent.VK_L);
+		splitCRButton.setMnemonic(KeyEvent.VK_J);
+		splitBLButton.setMnemonic(KeyEvent.VK_K);
+
+		deleteCRButton.setMnemonic(KeyEvent.VK_S);
+		deleteSpaceButton.setMnemonic(KeyEvent.VK_Z);
+
+		replaceMaru2CRButton.setMnemonic(KeyEvent.VK_C);
+
+		reverseButton.setMnemonic(KeyEvent.VK_B);
+		rotateButton.setMnemonic(KeyEvent.VK_N);
 
 		addDateButton.setMnemonic(KeyEvent.VK_U);
 		addTimeButton.setMnemonic(KeyEvent.VK_I);
 
-		deleteCRButton.setMnemonic(KeyEvent.VK_J);
-		splitMaruButton.setMnemonic(KeyEvent.VK_L);
-		splitBLButton.setMnemonic(KeyEvent.VK_K);
-		mergeButton.setMnemonic(KeyEvent.VK_M);
-		returnMaruButton.setMnemonic(KeyEvent.VK_N);
 
+		upNodeButton.setMnemonic(KeyEvent.VK_UP);
+		downNodeButton.setMnemonic(KeyEvent.VK_DOWN);
+		rightNodeButton.setMnemonic(KeyEvent.VK_RIGHT);
+		leftNodeButton.setMnemonic(KeyEvent.VK_LEFT);
 
 		// button listeners
 		setButtonIcon(openCloseButton, "/", "/snytng/astah/plugin/mindplus/images/pm.png");
