@@ -163,7 +163,7 @@ IDiagramEditorSelectionListener
 	JButton closeButton = new JButton();
 
 	// 改行ボタン
-	JButton returnMaruButton = new JButton("。");
+	JButton returnMaruButton = new JButton("。(C)");
 	JButton returnTenButton = new JButton("、");
 
 	// 移動ボタン
@@ -368,25 +368,24 @@ IDiagramEditorSelectionListener
 		editPanel.add(deleteRegexButton);
 		*/
 		// 置換
+		/*
 		editPanel.add(getSeparator());// セパレーター
 		editPanel.add(new JLabel("置換："));
 		editPanel.add(replaceMaru2CRButton);
+		*/
 
-		/*
-		// 改行パネル
-		JPanel returnPanel = new JPanel();
-		returnPanel.setLayout(new BoxLayout(returnPanel, BoxLayout.X_AXIS));
-		returnPanel.setAlignmentX(LEFT_ALIGNMENT);
 		// 改行
-		//returnPanel.add(new JLabel("改行："));
-		//returnPanel.add(returnMaruButton);
+		editPanel.add(getSeparator());// セパレーター
+		editPanel.add(new JLabel("改行："));
+		editPanel.add(returnMaruButton);
 		//returnPanel.add(returnTenButton);
+		/**
 		// 移動
-		returnPanel.add(getSeparator());// セパレーター
-		returnPanel.add(upNodeButton);
-		returnPanel.add(downNodeButton);
-		returnPanel.add(rightNodeButton);
-		returnPanel.add(leftNodeButton);
+		editPanel.add(getSeparator());// セパレーター
+		editPanel.add(upNodeButton);
+		editPanel.add(downNodeButton);
+		editPanel.add(rightNodeButton);
+		editPanel.add(leftNodeButton);
 		*/
 
 		// 入れ替えパネル
