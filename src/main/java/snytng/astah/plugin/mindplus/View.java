@@ -144,7 +144,7 @@ IDiagramEditorSelectionListener
 	JButton splitRegexButton      = new JButton("正規表現");
 
 	// 置換ボタン
-	JButton replaceMaru2CRButton  = new JButton("。 ⇒ 改行(C)");
+	JButton replaceMaru2CRButton  = new JButton("。 ⇒ 改行");
 
 	// 統合ボタン
 	JButton mergeButton   = new JButton("マージ(M)");
