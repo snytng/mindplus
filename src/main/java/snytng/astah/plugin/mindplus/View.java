@@ -251,7 +251,7 @@ IDiagramEditorSelectionListener
 		deleteCRButton.setMnemonic(KeyEvent.VK_S);
 		deleteSpaceButton.setMnemonic(KeyEvent.VK_Z);
 
-		replaceMaru2CRButton.setMnemonic(KeyEvent.VK_C);
+		returnMaruButton.setMnemonic(KeyEvent.VK_C);
 
 		reverseButton.setMnemonic(KeyEvent.VK_B);
 		rotateButton.setMnemonic(KeyEvent.VK_N);
