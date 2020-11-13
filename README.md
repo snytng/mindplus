@@ -6,7 +6,7 @@ Mind+はastah*マインドマップのユーティリティプラグインです
 マインドマップのノードの分割・マージ、文字列の削除などの編集が簡単にできます。
 
 ## ダウンロード
-- [ここ](https://github.com/snytng/mindplus/releases/latest)からmindplus-x.x.x.jarダウンロードして下さい。
+- [ここ](https://github.com/snytng/mindplus/releases/latest)からmindplus.jarダウンロードして下さい。
 
 ## インストール
 - ダウンロードしたプラグインファイルをastah*アプリケーションにドラッグドロップするか、Program Files\asta-professionals\pluginsに置いて下さい。
