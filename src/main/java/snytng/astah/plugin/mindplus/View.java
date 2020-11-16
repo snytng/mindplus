@@ -35,7 +35,6 @@ import javax.swing.SwingConstants;
 import com.change_vision.jude.api.inf.AstahAPI;
 import com.change_vision.jude.api.inf.editor.MindmapEditor;
 import com.change_vision.jude.api.inf.editor.TransactionManager;
-import com.change_vision.jude.api.inf.exception.InvalidEditingException;
 import com.change_vision.jude.api.inf.model.IDiagram;
 import com.change_vision.jude.api.inf.model.IMindMapDiagram;
 import com.change_vision.jude.api.inf.presentation.INodePresentation;
@@ -88,6 +87,8 @@ IDiagramEditorSelectionListener
 	private transient ProjectAccessor projectAccessor = null;
 	private transient IDiagramViewManager diagramViewManager = null;
 
+	private NodeVisibility nodeVisibility = null;
+
 	public View() {
 		try {
 			projectAccessor = AstahAPI.getAstahAPI().getProjectAccessor();
@@ -97,6 +98,8 @@ IDiagramEditorSelectionListener
 		}
 
 		initProperties();
+
+		initUtilities();
 
 		initComponents();
 	}
@@ -108,6 +111,10 @@ IDiagramEditorSelectionListener
 		}catch(Exception e){
 			logger.log(Level.WARNING, e.getMessage(), e);
 		}
+	}
+
+	private void initUtilities() {
+		nodeVisibility = new NodeVisibility();
 	}
 
 	private void initComponents() {
@@ -267,19 +274,19 @@ IDiagramEditorSelectionListener
 
 		// button listeners
 		setButtonIcon(openCloseButton, "/", "/snytng/astah/plugin/mindplus/images/pm.png");
-		openCloseButton.addActionListener(e -> openCloseNode(this::openCloseNode));
+		openCloseButton.addActionListener(e -> openCloseNode(nodeVisibility::openCloseNode));
 
 		setButtonIcon(openAllButton, "/snytng/astah/plugin/mindplus/images/pp.png");
-		openAllButton.addActionListener(e -> openCloseNode(this::openAllNode));
+		openAllButton.addActionListener(e -> openCloseNode(nodeVisibility::openAllNode));
 
 		setButtonIcon(closeAllButton, "/snytng/astah/plugin/mindplus/images/mm.png");
-		closeAllButton.addActionListener(e -> openCloseNode(this::closeAllNode));
+		closeAllButton.addActionListener(e -> openCloseNode(nodeVisibility::closeAllNode));
 
 		setButtonIcon(openButton, "/snytng/astah/plugin/mindplus/images/p.png");
-		openButton.addActionListener(e -> openCloseNode(this::openNode));
+		openButton.addActionListener(e -> openCloseNode(nodeVisibility::openNode));
 
 		setButtonIcon(closeButton, "/snytng/astah/plugin/mindplus/images/m.png");
-		closeButton.addActionListener(e -> openCloseNode(this::closeNode));
+		closeButton.addActionListener(e -> openCloseNode(nodeVisibility::closeNode));
 
 		setButtonIcon(cloudButton, ",", "/snytng/astah/plugin/mindplus/images/cloud.png");
 		cloudButton.addActionListener(e -> cloudNode(true) );
@@ -990,174 +997,6 @@ IDiagramEditorSelectionListener
 
 		diagramViewManager.select(topic);
 
-	}
-
-
-	private static final String SUB_TOPIC_VISIBILITY = "sub_topic_visibility";
-	private static final String TRUE = "true";
-	private static final String FALSE = "false";
-
-	private boolean isSubTopicVisible(INodePresentation np){
-		return np.getProperty(SUB_TOPIC_VISIBILITY).equals(TRUE);
-	}
-
-	private boolean isSubTopicInvisible(INodePresentation np){
-		return ! isSubTopicVisible(np);
-	}
-
-	private void setSubtopicvisibility(INodePresentation np, boolean npv) {
-		try {
-			np.setProperty(SUB_TOPIC_VISIBILITY, npv ? TRUE : FALSE);
-		}catch(InvalidEditingException e){
-			e.printStackTrace();
-		}
-	}
-
-	private void setSubTopicVisible(INodePresentation np) {
-		setSubtopicvisibility(np, true);
-	}
-
-	private void setSubTopicInvisible(INodePresentation np) {
-		setSubtopicvisibility(np, false);
-	}
-
-
-	private void openCloseNode(INodePresentation np){
-		if(isSubTopicVisible(np)){
-			setSubTopicInvisible(np);
-		} else {
-			setSubTopicVisible(np);
-		}
-	}
-
-	private void openAllNode(INodePresentation np) {
-		setSubTopicVisible(np);
-		for(INodePresentation p : np.getChildren()){
-			this.openAllNode(p);
-		}
-	}
-
-	private void closeAllNode(INodePresentation np) {
-		setSubTopicInvisible(np);
-		for(INodePresentation p : np.getChildren()){
-			this.closeAllNode(p);
-		}
-	}
-
-	private void setOpenNodeDepth(INodePresentation np, int depth) {
-		logger.log(Level.INFO, "np open node=" + np.getLabel() + ", depth=" + depth);
-
-		if(depth < 0){
-			setSubTopicInvisible(np);
-		}
-
-		INodePresentation[] ns = new INodePresentation[]{np};
-
-		for (int i = 0; i <= depth; i++) {
-			if(ns.length == 0){
-				break;
-			}
-
-			for(INodePresentation n : ns){
-				setSubTopicVisible(n);
-			}
-
-			if(i == depth){
-				for(INodePresentation n : ns){
-					for(INodePresentation nc : n.getChildren()){
-						setSubTopicInvisible(nc);
-					}
-				}
-				break;
-			}
-
-			// next nodes
-			List<INodePresentation> nlist = new ArrayList<>();
-			for(INodePresentation n : ns){
-				nlist.addAll(Arrays.asList(n.getChildren()));
-			}
-			ns = nlist.toArray(new INodePresentation[nlist.size()]);
-		}
-
-	}
-
-	private void openNode(INodePresentation np) {
-
-		int depth = 0;
-		INodePresentation[] ns = new INodePresentation[]{np};
-
-		DEPTH: while(true){
-
-			// check open/close at n-th depth
-			for(INodePresentation n : ns){
-				if(isSubTopicInvisible(n)){
-					break DEPTH;
-				}
-			}
-
-			// next depth
-			List<INodePresentation> nlist = new ArrayList<>();
-			for(INodePresentation n : ns) { nlist.addAll(Arrays.asList(n.getChildren())); }
-			ns = nlist.toArray(new INodePresentation[nlist.size()]);
-
-			// check next depth exists
-			if(ns.length == 0){
-				break;
-			} else {
-				depth++;
-			}
-		}
-
-		setOpenNodeDepth(np, depth);
-
-	}
-
-	private void closeNode(INodePresentation np) {
-
-		int depth = 0;
-		INodePresentation[] ns = new INodePresentation[]{np};
-
-		DEPTH: while(true){
-
-			// check open/close at n-th depth
-			boolean visibleDepth = false;
-			boolean invisibleDepth = false;
-			for(INodePresentation n : ns){
-				if(isSubTopicVisible(n)){
-					visibleDepth = true;
-				}
-				if(isSubTopicInvisible(n)){
-					invisibleDepth = true;
-				}
-			}
-
-			if((! visibleDepth) && invisibleDepth) {
-				depth--;
-				if(depth < 0){
-					depth = 0;
-				}
-				break DEPTH;
-			}
-
-			// next depth
-			List<INodePresentation> nlist = new ArrayList<>();
-			for(INodePresentation n : ns) { nlist.addAll(Arrays.asList(n.getChildren())); }
-			ns = nlist.toArray(new INodePresentation[nlist.size()]);
-
-			// check next depth exists
-			if(ns.length == 0){
-				depth--;
-				if(depth < 0){
-					depth = 0;
-				}
-				break DEPTH;
-			} else {
-				depth++;
-			}
-		}
-
-		depth--;
-		setOpenNodeDepth(np, depth);
 	}
 
 	private void cloudNode(boolean visibility){
