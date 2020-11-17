@@ -35,6 +35,7 @@ import javax.swing.SwingConstants;
 import com.change_vision.jude.api.inf.AstahAPI;
 import com.change_vision.jude.api.inf.editor.MindmapEditor;
 import com.change_vision.jude.api.inf.editor.TransactionManager;
+import com.change_vision.jude.api.inf.exception.InvalidEditingException;
 import com.change_vision.jude.api.inf.model.IDiagram;
 import com.change_vision.jude.api.inf.model.IMindMapDiagram;
 import com.change_vision.jude.api.inf.presentation.INodePresentation;
@@ -183,6 +184,9 @@ IDiagramEditorSelectionListener
 	JButton addDateButton = new JButton("日付(U)");
 	JButton addTimeButton = new JButton("時間(I)");
 
+	// コピーボタン
+	JButton copyNodeFormatButton = new JButton("書式");
+
 	// セパレーター
 	@SuppressWarnings("serial")
 	private JSeparator getSeparator(){
@@ -236,6 +240,8 @@ IDiagramEditorSelectionListener
 		leftNodeButton.setEnabled(b);
 		addDateButton.setEnabled(b);
 		addTimeButton.setEnabled(b);
+
+		copyNodeFormatButton.setEnabled(b);
 	}
 
 	private Container createButtonsPane() {
@@ -265,7 +271,6 @@ IDiagramEditorSelectionListener
 
 		addDateButton.setMnemonic(KeyEvent.VK_U);
 		addTimeButton.setMnemonic(KeyEvent.VK_I);
-
 
 		upNodeButton.setMnemonic(KeyEvent.VK_UP);
 		downNodeButton.setMnemonic(KeyEvent.VK_DOWN);
@@ -324,6 +329,7 @@ IDiagramEditorSelectionListener
 		addDateButton.addActionListener(e -> addNodes(new SimpleDateFormat("yyyy/MM/dd").format(Calendar.getInstance().getTime())) );
 		addTimeButton.addActionListener(e -> addNodes(new SimpleDateFormat("HH:mm:ss").format(Calendar.getInstance().getTime())) );
 
+		copyNodeFormatButton.addActionListener(e -> saveSelectedPresentations());
 
 		// オープン パネル
 		JPanel openPanel = new JPanel();
@@ -361,7 +367,7 @@ IDiagramEditorSelectionListener
 		editPanel.add(getSeparator());// セパレーター
 		editPanel.add(splitRegexText);
 		editPanel.add(splitRegexButton);
-		*/
+		 */
 		// 削除
 		editPanel.add(getSeparator());// セパレーター
 		editPanel.add(new JLabel("削除："));
@@ -373,13 +379,13 @@ IDiagramEditorSelectionListener
 		editPanel.add(getSeparator());// セパレーター
 		editPanel.add(deleteRegexText);
 		editPanel.add(deleteRegexButton);
-		*/
+		 */
 		// 置換
 		/*
 		editPanel.add(getSeparator());// セパレーター
 		editPanel.add(new JLabel("置換："));
 		editPanel.add(replaceMaru2CRButton);
-		*/
+		 */
 
 		// 改行
 		editPanel.add(getSeparator());// セパレーター
@@ -393,7 +399,7 @@ IDiagramEditorSelectionListener
 		editPanel.add(downNodeButton);
 		editPanel.add(rightNodeButton);
 		editPanel.add(leftNodeButton);
-		*/
+		 */
 
 		// 入れ替えパネル
 		JPanel orderPanel = new JPanel();
@@ -409,6 +415,11 @@ IDiagramEditorSelectionListener
 		orderPanel.add(new JLabel("追加："));
 		orderPanel.add(addDateButton);
 		orderPanel.add(addTimeButton);
+
+		// コピー
+		orderPanel.add(getSeparator());// セパレーター
+		orderPanel.add(new JLabel("コピー："));
+		orderPanel.add(copyNodeFormatButton);
 
 		// パネル配置
 		JPanel panel = new JPanel();
@@ -447,6 +458,11 @@ IDiagramEditorSelectionListener
 			logger.log(Level.WARNING, "current diagram is not MindMap Diagram.");
 			return null;
 		}
+	}
+
+	private transient IPresentation[] selectedPresentations = null;
+	private void saveSelectedPresentations() {
+		selectedPresentations = diagramViewManager.getSelectedPresentations();
 	}
 
 	private void replaceString(UnaryOperator<String> f ){
@@ -1126,9 +1142,51 @@ IDiagramEditorSelectionListener
 
 			activateButtons();
 
+			// 選択後処理モード
+			IPresentation[] currentSelectedPresentations = null;
+			if(selectedPresentations != null) {
+				currentSelectedPresentations = diagramViewManager.getSelectedPresentations();
+				if(currentSelectedPresentations.length > 0) {
+					IPresentation basePresentation = currentSelectedPresentations[0];
+
+					try {
+						TransactionManager.beginTransaction();
+						for(IPresentation targetPresentation : selectedPresentations) {
+							copyFormat(basePresentation, targetPresentation);
+						}
+						TransactionManager.endTransaction();
+					}catch(Exception e) {
+						TransactionManager.endTransaction();
+						e.printStackTrace();
+					}
+				}
+			}
+			selectedPresentations = null;
+
 		}catch(Exception e){
 			logger.log(Level.WARNING, e.getMessage(), e);
 		}
+	}
+
+	private static final String FILL_COLOR = "fill.color";
+	private static final String FONT_COLOR = "font.color";
+
+	private void copyFormat(IPresentation basePresentation, IPresentation targetPresentation) throws InvalidEditingException {
+		syncProperty(basePresentation, targetPresentation, FILL_COLOR);
+		syncProperty(basePresentation, targetPresentation, FONT_COLOR);
+	}
+
+	private void syncProperty(IPresentation p, IPresentation pr, String propertyKey) throws InvalidEditingException {
+		String fillColor = p.getProperty(propertyKey);
+		if(isValidProperty(fillColor)) {
+			if(isValidProperty(pr.getProperty(propertyKey))) {
+				pr.setProperty(propertyKey, fillColor);
+			}
+		}
+	}
+
+	private boolean isValidProperty(String prop) {
+		return (prop != null && ! prop.isEmpty() && ! prop.equals("null"));
 	}
 
 	// IPluginExtraTabView
