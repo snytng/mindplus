@@ -74,7 +74,7 @@ IDiagramEditorSelectionListener
 	/**
 	 * プロパティファイルの配置場所
 	 */
-	private static final String VIEW_PROPERTIES = "snytng.astah.plugin.mindplus.view";
+	private static final String VIEW_PROPERTIES = View.class.getPackage().getName() + ".view";
 
 	/**
 	 * リソースバンドル
@@ -154,8 +154,10 @@ IDiagramEditorSelectionListener
 	// 置換ボタン
 	JButton replaceMaru2CRButton  = new JButton("。 ⇒ 改行");
 
-	// 統合ボタン
+	// マージボタン
 	JButton mergeButton   = new JButton("マージ(M)");
+
+	// 順序ボタン
 	JButton reverseButton = new JButton("逆順(B)");
 	JButton rotateButton = new JButton("回転(N)");
 
@@ -186,6 +188,10 @@ IDiagramEditorSelectionListener
 
 	// コピーボタン
 	JButton copyNodeFormatButton = new JButton("書式");
+
+	// 挿入・抜去ボタン
+	JButton insertButton = new JButton("挿入");
+	JButton removeButton = new JButton("抜去");
 
 	// セパレーター
 	@SuppressWarnings("serial")
@@ -242,6 +248,9 @@ IDiagramEditorSelectionListener
 		addTimeButton.setEnabled(b);
 
 		copyNodeFormatButton.setEnabled(b);
+
+		insertButton.setEnabled(b);
+		removeButton.setEnabled(b);
 	}
 
 	private Container createButtonsPane() {
@@ -330,6 +339,9 @@ IDiagramEditorSelectionListener
 		addTimeButton.addActionListener(e -> addNodes(new SimpleDateFormat("HH:mm:ss").format(Calendar.getInstance().getTime())) );
 
 		copyNodeFormatButton.addActionListener(e -> saveSelectedPresentations());
+
+		insertButton.addActionListener(e -> insertNode());
+		removeButton.addActionListener(e -> removeNode());
 
 		// オープン パネル
 		JPanel openPanel = new JPanel();
@@ -420,6 +432,13 @@ IDiagramEditorSelectionListener
 		orderPanel.add(getSeparator());// セパレーター
 		orderPanel.add(new JLabel("コピー："));
 		orderPanel.add(copyNodeFormatButton);
+
+		// 挿入・抜去
+		orderPanel.add(getSeparator());// セパレーター
+		orderPanel.add(new JLabel("挿抜："));
+		orderPanel.add(insertButton);
+		orderPanel.add(removeButton);
+
 
 		// パネル配置
 		JPanel panel = new JPanel();
@@ -1059,6 +1078,115 @@ IDiagramEditorSelectionListener
 
 	}
 
+	private void insertNode() {
+		// マインドマップを取得、なければ終了
+		IMindMapDiagram mmDiagram = getCurrentDiagram();
+		if(mmDiagram == null){
+			return;
+		}
+
+		IPresentation[] ps = diagramViewManager.getSelectedPresentations();
+		if(ps.length == 0){
+			logger.log(Level.WARNING, "no node selected");
+			return;
+		}
+
+		List<INodePresentation> nps =
+				Arrays.stream(ps)
+				.filter(INodePresentation.class::isInstance)
+				.map(INodePresentation.class::cast)
+				.collect(Collectors.toList());
+
+		if(nps.isEmpty()){
+			logger.log(Level.WARNING, "no INodePresentation selected");
+			return;
+		}
+
+		// 最初のノードだけにする
+		INodePresentation np1 = nps.get(0);
+
+		try {
+			MindmapEditor mme = projectAccessor.getDiagramEditorFactory().getMindmapEditor();
+			mme.setDiagram(mmDiagram);
+
+			TransactionManager.beginTransaction();
+
+			INodePresentation[] np1Children = np1.getChildren();
+
+			// 挿入ノードの文字列を作る（選択したノードの子ノードの数）
+			String baseLabel = Integer.toString(np1.getChildren().length);
+
+			// 挿入するノードを新規に作成
+			INodePresentation base = mme.createTopic(np1, baseLabel, 0);
+
+			// マージ対象のノードの子ノードをbaseに移動する
+			for(INodePresentation cp : np1Children){
+				mme.moveTo(cp, base);
+			}
+
+			TransactionManager.endTransaction();
+
+			diagramViewManager.select(np1);
+
+		} catch (Exception e) {
+			TransactionManager.abortTransaction();
+			logger.log(Level.WARNING, e.getMessage(), e);
+		}
+
+	}
+
+	private void removeNode() {
+		// マインドマップを取得、なければ終了
+		IMindMapDiagram mmDiagram = getCurrentDiagram();
+		if(mmDiagram == null){
+			return;
+		}
+
+		IPresentation[] ps = diagramViewManager.getSelectedPresentations();
+		if(ps.length == 0){
+			logger.log(Level.WARNING, "no node selected");
+			return;
+		}
+
+		List<INodePresentation> nps =
+				Arrays.stream(ps)
+				.filter(INodePresentation.class::isInstance)
+				.map(INodePresentation.class::cast)
+				.collect(Collectors.toList());
+
+		if(nps.isEmpty()){
+			logger.log(Level.WARNING, "no INodePresentation selected");
+			return;
+		}
+
+		// 最初のノードだけにする
+		INodePresentation np1 = nps.get(0);
+
+		try {
+			MindmapEditor mme = projectAccessor.getDiagramEditorFactory().getMindmapEditor();
+			mme.setDiagram(mmDiagram);
+
+			TransactionManager.beginTransaction();
+
+			INodePresentation[] np1Children = np1.getChildren();
+
+			// マージ対象のノードの子ノードをbaseに移動して、削除する
+			for(INodePresentation cp : np1Children){
+				for(INodePresentation gcp: cp.getChildren()) {
+					mme.moveTo(gcp, np1);
+				}
+				mme.deletePresentation(cp);
+			}
+
+			TransactionManager.endTransaction();
+
+		} catch (Exception e) {
+			TransactionManager.abortTransaction();
+			logger.log(Level.WARNING, e.getMessage(), e);
+		}
+
+
+	}
 
 	/**
 	 * プロジェクトが変更されたら表示を更新する
