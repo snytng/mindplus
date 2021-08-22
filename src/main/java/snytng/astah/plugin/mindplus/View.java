@@ -192,6 +192,7 @@ IDiagramEditorSelectionListener
 	// 挿入・抜去ボタン
 	JButton insertButton = new JButton("挿入");
 	JButton removeButton = new JButton("抜去");
+	JButton removeInsertButton = new JButton("抜挿");
 
 	// セパレーター
 	@SuppressWarnings("serial")
@@ -251,6 +252,7 @@ IDiagramEditorSelectionListener
 
 		insertButton.setEnabled(b);
 		removeButton.setEnabled(b);
+		removeInsertButton.setEnabled(b);
 	}
 
 	private Container createButtonsPane() {
@@ -342,6 +344,7 @@ IDiagramEditorSelectionListener
 
 		insertButton.addActionListener(e -> insertNode());
 		removeButton.addActionListener(e -> removeNode());
+		removeInsertButton.addActionListener(e -> {removeNode(); insertNode();});
 
 		// オープン パネル
 		JPanel openPanel = new JPanel();
@@ -438,6 +441,7 @@ IDiagramEditorSelectionListener
 		orderPanel.add(new JLabel("挿抜："));
 		orderPanel.add(insertButton);
 		orderPanel.add(removeButton);
+		orderPanel.add(removeInsertButton);
 
 
 		// パネル配置
