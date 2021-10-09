@@ -187,12 +187,12 @@ IDiagramEditorSelectionListener
 	JButton addTimeButton = new JButton("時間(I)");
 
 	// コピーボタン
-	JButton copyNodeFormatButton = new JButton("書式");
+	JButton copyNodeFormatButton = new JButton("書式(\\)");
 
 	// 挿入・抜去ボタン
-	JButton insertButton = new JButton("挿入");
-	JButton removeButton = new JButton("抜去");
-	JButton removeInsertButton = new JButton("抜挿");
+	JButton insertButton = new JButton("挿入(Ins)");
+	JButton removeButton = new JButton("抜去(Del)");
+	JButton removeInsertButton = new JButton("抜挿(BS)");
 
 	// セパレーター
 	@SuppressWarnings("serial")
@@ -280,13 +280,19 @@ IDiagramEditorSelectionListener
 		reverseButton.setMnemonic(KeyEvent.VK_B);
 		rotateButton.setMnemonic(KeyEvent.VK_N);
 
-		addDateButton.setMnemonic(KeyEvent.VK_U);
-		addTimeButton.setMnemonic(KeyEvent.VK_I);
-
 		upNodeButton.setMnemonic(KeyEvent.VK_UP);
 		downNodeButton.setMnemonic(KeyEvent.VK_DOWN);
 		rightNodeButton.setMnemonic(KeyEvent.VK_RIGHT);
 		leftNodeButton.setMnemonic(KeyEvent.VK_LEFT);
+
+		addDateButton.setMnemonic(KeyEvent.VK_U);
+		addTimeButton.setMnemonic(KeyEvent.VK_I);
+
+		copyNodeFormatButton.setMnemonic(KeyEvent.VK_BACK_SLASH);
+
+		insertButton.setMnemonic(KeyEvent.VK_INSERT);
+		removeButton.setMnemonic(KeyEvent.VK_DELETE);
+		removeInsertButton.setMnemonic(KeyEvent.VK_BACK_SPACE);
 
 		// button listeners
 		setButtonIcon(openCloseButton, "/", "/snytng/astah/plugin/mindplus/images/pm.png");
