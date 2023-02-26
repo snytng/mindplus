@@ -95,6 +95,54 @@ public class TextConverterTest {
 	}
 
 	@Test
+	public void test_deleteBL_空行なし() {
+		String input  = "車は道を走る";
+		String output = "車は道を走る";
+		String result = TextConverter.deleteBL(input);
+		assertEquals(result, output);
+	}
+
+	@Test
+	public void test_deleteBL_空行なし改行あり() {
+		String input  = "車は\r\n道を走る";
+		String output = "車は\r\n道を走る";
+		String result = TextConverter.deleteBL(input);
+		assertEquals(result, output);
+	}
+
+	@Test
+	public void test_deleteBL_スペース空行あり() {
+		String input  = "車は\r\n  \r\n道を走る";
+		String output = "車は"+ System.lineSeparator() + "道を走る";
+		String result = TextConverter.deleteBL(input);
+		assertEquals(result, output);
+	}
+
+	@Test
+	public void test_deleteBL_タブスペース空行あり() {
+		String input  = "車は\r\n\t \t \r\n道を走る";
+		String output = "車は"+ System.lineSeparator() + "道を走る";
+		String result = TextConverter.deleteBL(input);
+		assertEquals(result, output);
+	}
+
+	@Test
+	public void test_deleteBL_空行あり() {
+		String input  = "車は\r\n\r\n道を走る";
+		String output = "車は"+ System.lineSeparator() + "道を走る";
+		String result = TextConverter.deleteBL(input);
+		assertEquals(result, output);
+	}
+
+	@Test
+	public void test_deleteBL_空行2行あり() {
+		String input  = "車は\r\n\r\n\r\n道を走る";
+		String output = "車は"+ System.lineSeparator() + "道を走る";
+		String result = TextConverter.deleteBL(input);
+		assertEquals(result, output);
+	}
+
+	@Test
 	public void test_splitSentence() {
 		String input  = "車は道を走る。タイヤは車の一部だ。";
 		String output = "車は道を走る。" + System.lineSeparator() + "タイヤは車の一部だ。";
@@ -128,16 +176,16 @@ public class TextConverterTest {
 
 	@Test
 	public void test_splitBL() {
-		String input  = "車\r\nは\n道を走る\r\n\r\nタイヤは車の一部だ \r\n  \r\n	\r\n";
-		String output = "車\nは\n道を走る" + System.lineSeparator() + "タイヤは車の一部だ";
+		String input  = "車\r\nは\r\n道を走る\r\n\r\nタイヤは車の一部だ \r\n  \r\n	\r\n";
+		String output = "車\r\nは\r\n道を走る" + System.lineSeparator() + "タイヤは車の一部だ";
 		String result = TextConverter.splitBL(input);
 		assertEquals(result, output);
 	}
 
 	@Test
 	public void test_splitBLlastOneReturn() {
-		String input  = "車\r\nは\n道を走る\r\n\r\nタイヤは車の一部だ \r\n ";
-		String output = "車\nは\n道を走る" + System.lineSeparator() + "タイヤは車の一部だ";
+		String input  = "車\r\nは\r\n道を走る\r\n\r\nタイヤは車の一部だ \r\n ";
+		String output = "車\r\nは\r\n道を走る" + System.lineSeparator() + "タイヤは車の一部だ";
 		String result = TextConverter.splitBL(input);
 		assertEquals(result, output);
 	}

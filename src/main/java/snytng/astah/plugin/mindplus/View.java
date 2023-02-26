@@ -140,6 +140,7 @@ IDiagramEditorSelectionListener
 	JButton deleteCRButton        = new JButton("改行(S)");
 	JButton deleteMaruAndCRButton = new JButton("。と改行");
 	JButton deleteSpaceButton     = new JButton("前後空白(Z)");
+	JButton deleteBLButton        = new JButton("空行(G)");
 	JTextField deleteRegexText    = new JTextField(5);
 	JButton deleteRegexButton     = new JButton("正規表現");
 
@@ -218,6 +219,7 @@ IDiagramEditorSelectionListener
 		deleteCRButton.setEnabled(b);
 		deleteMaruAndCRButton.setEnabled(b);
 		deleteSpaceButton.setEnabled(b);
+		deleteBLButton.setEnabled(b);
 		deleteRegexText.setEnabled(b);
 		deleteRegexButton.setEnabled(b);
 		splitMaruButton.setEnabled(b);
@@ -256,6 +258,50 @@ IDiagramEditorSelectionListener
 	}
 
 	private Container createButtonsPane() {
+		// Alt mnemonic Keys
+		// A astah*メニュー 整列
+		// B			reverseButton
+		// C			returnMaruButton
+		// D astah*メニュー 図
+		// E astah*メニュー 編集
+		// F astah*メニューファイル
+		// G			deleteBLButton
+		// H astah*メニュー ヘルプ
+		// I			addTimeButton
+		// J			splitCRButton
+		// K			splitBLButton
+		// L			splitMaruButton
+		// M			mergeButton
+		// N			rotateButton
+		// O
+		// P astah*メニュー プラグイン
+		// Q
+		// R
+		// S			deleteCRButton
+		// T astah*メニュー ツール
+		// U			addDateButton
+		// V
+		// W astah*メニュー ウィンドウ
+		// X astah*メニュー マインドマップ 配下のノードを開閉する
+		// Y
+		// Z			deleteSpaceButton
+		// Comma		cloudButton
+		// Period		skyButton
+		// Insert		insertButton
+		// Del			removeButton
+		// BackSpace	removeInsertButton
+		// Space astah*メニュー ウィンドウメニュー表示
+		// Slash		openCloseButton
+		// BackSlash	copyNodeFormatButton
+		// Home			closeAllButton
+		// End			openAllButton
+		// PageUp		openButton
+		// PageDown		closeButton
+		// Up			upNodeButton
+		// Down			downNodeButton
+		// Right		rightNodeButton
+		// Left			leftNodeButton
+
 		//	button mnemonic
 		openCloseButton.setMnemonic(KeyEvent.VK_SLASH);
 		openAllButton.setMnemonic(KeyEvent.VK_END);
@@ -274,6 +320,7 @@ IDiagramEditorSelectionListener
 
 		deleteCRButton.setMnemonic(KeyEvent.VK_S);
 		deleteSpaceButton.setMnemonic(KeyEvent.VK_Z);
+		deleteBLButton.setMnemonic(KeyEvent.VK_G);
 
 		returnMaruButton.setMnemonic(KeyEvent.VK_C);
 
@@ -320,6 +367,7 @@ IDiagramEditorSelectionListener
 		deleteCRButton.addActionListener(e -> replaceString(TextConverter::deleteCR));
 		deleteMaruAndCRButton.addActionListener(e -> replaceString(TextConverter::deleteMaruAndCR) );
 		deleteSpaceButton.addActionListener(e -> replaceString(TextConverter::deleteSpace));
+		deleteBLButton.addActionListener(e -> replaceString(TextConverter::deleteBL));
 		deleteRegexButton.addActionListener(e -> replaceString(input -> TextConverter.deleteRegex(input, deleteRegexText.getText())) );
 
 		mergeButton.addActionListener(e -> mergeNodes() );
@@ -396,6 +444,7 @@ IDiagramEditorSelectionListener
 		editPanel.add(deleteCRButton);
 		//editPanel.add(deleteMaruAndCRButton);
 		editPanel.add(deleteSpaceButton);
+		editPanel.add(deleteBLButton);
 		/*
 		editPanel.add(getSeparator());// セパレーター
 		editPanel.add(deleteRegexText);
@@ -426,9 +475,9 @@ IDiagramEditorSelectionListener
 		JPanel orderPanel = new JPanel();
 		orderPanel.setLayout(new BoxLayout(orderPanel, BoxLayout.X_AXIS));
 		orderPanel.setAlignmentX(LEFT_ALIGNMENT);
-		// 入れ替え
+		// 上下順序
 		orderPanel.add(getSeparator());// セパレーター
-		orderPanel.add(new JLabel("順序："));
+		orderPanel.add(new JLabel("上下順序："));
 		orderPanel.add(reverseButton);
 		orderPanel.add(rotateButton);
 		// 追加

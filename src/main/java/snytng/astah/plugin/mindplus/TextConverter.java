@@ -48,6 +48,14 @@ public class TextConverter {
 				.replaceFirst("[\\s　]+$", "");
 	}
 
+	public static String deleteBL(String input){
+		return input
+				//.replaceAll("\\r", "")
+				.replaceAll("(\\s*\\r*\\n){2,}",  System.lineSeparator())
+				.replaceAll("(\\s*\\r*\\n)\\s*+$",  System.lineSeparator())
+				.trim();
+	}
+
 
 	// split
 
@@ -61,16 +69,16 @@ public class TextConverter {
 
 	public static String splitCR(String input){
 		return input
-				.replaceAll("\\r", "")
-				.replaceAll("\\n", System.lineSeparator())
+				//.replaceAll("\\r", "")
+				.replaceAll("\\r*\\n", System.lineSeparator())
 				.trim();
 	}
 
 	public static String splitBL(String input){
 		return input
-				.replaceAll("\\r", "")
-				.replaceAll("(\\s*\\n){2,}", System.lineSeparator())
-				.replaceAll("(\\s*\\n)\\s*+$", System.lineSeparator())
+				//.replaceAll("\\r", "")
+				.replaceAll("(\\s*\\r*\\n){2,}", System.lineSeparator())
+				.replaceAll("(\\s*\\r*\\n)\\s*+$", System.lineSeparator())
 				.trim();
 	}
 
