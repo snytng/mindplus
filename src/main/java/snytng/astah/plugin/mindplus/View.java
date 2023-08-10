@@ -732,7 +732,7 @@ IDiagramEditorSelectionListener
 			INodePresentation base = mme.createTopic(xps0.getParent(), baseLabel, index);
 
 
-			// マージ対象のノードの子ノードをbaseに移動して、選択したノードを削除する
+			// マージ対象のノードの子ノードを新しく作ったノードへ移動して、選択したノードを削除する
 			for(INodePresentation p : xps){
 				for(INodePresentation cp : p.getChildren()){
 					mme.moveTo(cp, base);
@@ -741,6 +741,9 @@ IDiagramEditorSelectionListener
 			}
 
 			TransactionManager.endTransaction();
+
+			// 新しく作ったノードのみを選択状態にする
+			diagramViewManager.select(base);
 
 		} catch (Exception e) {
 			TransactionManager.abortTransaction();
